@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: permissioning_test
+          POSTGRES_USER: permissioning
+          POSTGRES_PASSWORD: permissioning_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U permissioning -d permissioning_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://permissioning:permissioning_test@localhost:5432/permissioning_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+          cache: true
+      - name: Check formatting
+        run: test -z "$(gofmt -l ./cmd ./internal)"
+      - name: Download dependencies
+        run: go mod download
+      - name: Vet
+        run: go vet ./...
+      - name: Unit and integration tests
+        run: go test -race -cover ./...
+      - name: Build
+        run: go build ./cmd/api
