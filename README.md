@@ -56,6 +56,7 @@ All /v1 routes require X-Tenant-ID. X-Actor-ID is optional and defaults to syste
 Requirements: Go 1.23+ and PostgreSQL 16+.
 
 ```bash
+go mod tidy
 export DATABASE_URL="postgres://permissioning:permissioning_dev@localhost:5432/permissioning?sslmode=disable"
 go run ./cmd/api
 ```
@@ -63,6 +64,7 @@ go run ./cmd/api
 PowerShell:
 
 ```powershell
+go mod tidy
 $env:DATABASE_URL = 'postgres://permissioning:permissioning_dev@localhost:5432/permissioning?sslmode=disable'
 go run ./cmd/api
 ```
@@ -70,6 +72,7 @@ go run ./cmd/api
 ## Testing
 
 ```bash
+go mod tidy
 go test ./...
 go vet ./...
 ```
