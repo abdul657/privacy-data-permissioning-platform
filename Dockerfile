@@ -1,8 +1,9 @@
 FROM golang:1.23-alpine AS build
 WORKDIR /src
 COPY go.mod ./
-RUN go mod download
-COPY . .
+COPY cmd ./cmd
+COPY internal ./internal
+RUN go mod tidy
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /out/permissioning-api ./cmd/api
 
 FROM gcr.io/distroless/static-debian12:nonroot
