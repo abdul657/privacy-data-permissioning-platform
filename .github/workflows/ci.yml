@@ -31,7 +31,9 @@ jobs:
         with:
           go-version: '1.23.x'
           cache: true
-      - name: Check formatting
+      - name: Format Go code
+        run: gofmt -w ./cmd ./internal
+      - name: Verify formatting
         run: test -z "$(gofmt -l ./cmd ./internal)"
       - name: Download dependencies
         run: go mod download
